@@ -8,7 +8,6 @@ function connectvcenter {
         $vcenter
     )
     Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
-    #Set-PowerCLIConfiguration -Scope User -InvalidCertificateAction warn
     connect-VIServer $vcenter
 }
 function disconnectvcenter {
