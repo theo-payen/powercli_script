@@ -14,3 +14,10 @@
 Installation de PowerCLI
 
 `Install-Module -Name VMware.PowerCLI`
+
+## Script Cluster 
+
+Notre script permet de créer:
+-  Créer un cluster 
+-  Créer un centre de donnée
+-  Ajouter un host ESXi dans le cluster 
