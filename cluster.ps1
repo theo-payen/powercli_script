@@ -1,3 +1,9 @@
+# crée un nouveau cluster
+# 
+# 
+# host 
+
+
 #New-Cluster -Name "MyCluster" -Location "MyDatacenter"
 
 
@@ -10,7 +16,7 @@ $server_hosts
 $server_hosts | ForEach-Object {
         $_.ip
         $conect_host = Connect-VIServer -Server $_.ip
-        
+
         Add-VMHost -Server $myServer -Name MyVMHost1 -Location MyDatacenter1 -User MyUsername1 -Password MyPassword1
 
     }
