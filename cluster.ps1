@@ -50,6 +50,8 @@ function New-hostesxi {
 }
 
 function main {
+    $vCenter
+    connect -vcenter $vCenter
     $datacenter = "PV_Datacenter"
     $cluster = "PV_Cluster"
     Set-cluster -datacenter $datacenter -cluster $cluster
@@ -61,6 +63,7 @@ function main {
     )
 
     New-hostesxi -server_hosts $server_hosts -cluster $cluster
+    diconect
 
 }
 
