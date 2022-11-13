@@ -4,50 +4,67 @@
 # 3 add host esxi on cluster
 
 function connect {
+    #Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
     Set-PowerCLIConfiguration -Scope User -InvalidCertificateAction warn
     connect-VIServer 172.20.20.5
 }
-
-function main() {
-
-    $location = Get-Folder -NoRecursion
-
-    $datacenter = "PV_Datacenter"
-    New-DataCenter -Location $location -Name $datacenter
-
-    $cluster = "PV_Cluster"
-
-    New-Cluster -Name $cluster -Location $datacenters
-
+function diconect {
+    disconnect-viserver -confirm:$false | out-null    
 }
 
 
 
-
-
-
-
-
-function esxi() {
-    $server_hosts = @(
-        [pscustomobject]@{ip='172.20.20.6';login='root';password='Azerty@77'}
-        [pscustomobject]@{ip='172.20.20.7';login='root';password='Azerty@77'}
-        [pscustomobject]@{ip='172.20.20.8';login='root';password='Azerty@77'}
+function Set-cluster{
+    param (
+        $datacenter,
+        $cluster
     )
-    $server_hosts
-    
-    
-    $server_hosts | ForEach-Object {
-            $_.ip
-            $_.login
-            $_.password
-
-            #Add-VMHost -Server $myServer -Name MyVMHost1 -Location MyDatacenter1 -User MyUsername1 -Password MyPassword1
-    
-        }
-    
+    if ((Get-Datacenter -Name $datacenter) -eq $false){
+        New-DataCenter -Location $location -Name $datacenter
+    }else{
+        Write-Host "le datacenter $datacenter existe deja"
+    }
+    if ((Get-Cluster -Name $cluster) -eq $false){
+        New-Cluster -Name $cluster -Location $datacenter
+    }else{
+        Write-Host "le cluster $cluster existe deja"
+    }
 }
+
+
+function New-hostesxi {
+    param (
+        $server_hosts,
+        $cluster
+    )
+
+    $server_hosts | ForEach-Object {
+        
+        if ((Get-VMHost -Name $_.ip) -eq $false){
+            Write-Host "ajout d'un nouvelle host dans le cluster $cluster : $($_.ip)"
+            Add-VMHost -Name $_.ip -Location $cluster -User $_.user -Password $_.password -Force
+        }else{
+            Write-Host "l'esxi $($_.ip) existe deja"
+        }
+    }
+}
+
+function main {
+    $vCenter
+    connect -vcenter $vCenter
+    $datacenter = "PV_Datacenter"
+    $cluster = "PV_Cluster"
+    Set-cluster -datacenter $datacenter -cluster $cluster
+
+    $server_hosts = @(
+        [pscustomobject]@{ip='172.20.20.6';user='root';password='Azerty@77'}
+        [pscustomobject]@{ip='172.20.20.7';user='root';password='Azerty@77'}
+        [pscustomobject]@{ip='172.20.20.8';user='root';password='Azerty@77'}
+    )
+
+    New-hostesxi -server_hosts $server_hosts -cluster $cluster
+    diconect
+
+}
+
 main
-esxi
-
-
