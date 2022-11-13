@@ -4,41 +4,49 @@
 # 3 add host esxi on cluster
 
 function connect {
+    #Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
     Set-PowerCLIConfiguration -Scope User -InvalidCertificateAction warn
     connect-VIServer 172.20.20.5
 }
+function diconect {
+    disconnect-viserver -confirm:$false | out-null    
+}
+
+
 
 function Set-cluster{
     param (
         $datacenter,
         $cluster
     )
-    $location = Get-Folder -NoRecursion
-
-    
-    New-DataCenter -Location $location -Name $datacenter
-
-
-    New-Cluster -Name $cluster -Location $datacenter
-
+    if ((Get-Datacenter -Name $datacenter) -eq $false){
+        New-DataCenter -Location $location -Name $datacenter
+    }else{
+        Write-Host "le datacenter $datacenter existe deja"
+    }
+    if ((Get-Cluster -Name $cluster) -eq $false){
+        New-Cluster -Name $cluster -Location $datacenter
+    }else{
+        Write-Host "le cluster $cluster existe deja"
+    }
 }
 
 
 function New-hostesxi {
     param (
         $server_hosts,
-        $datacenter
+        $cluster
     )
 
     $server_hosts | ForEach-Object {
-            $_.ip
-            $_.login
-            $_.password
-            Add-VMHost -Server $_.ip -Name MyVMHost1 -Location MyDatacenter1 -User MyUsername1 -Password MyPassword1
-            #Add-VMHost -Server $myServer -Name MyVMHost1 -Location MyDatacenter1 -User MyUsername1 -Password MyPassword1
-    
+        
+        if ((Get-VMHost -Name $_.ip) -eq $false){
+            Write-Host "ajout d'un nouvelle host dans le cluster $cluster : $($_.ip)"
+            Add-VMHost -Name $_.ip -Location $cluster -User $_.user -Password $_.password -Force
+        }else{
+            Write-Host "l'esxi $($_.ip) existe deja"
         }
-    
+    }
 }
 
 function main {
@@ -47,12 +55,12 @@ function main {
     Set-cluster -datacenter $datacenter -cluster $cluster
 
     $server_hosts = @(
-        [pscustomobject]@{name='esx1';ip='172.20.20.6';login='root';password='Azerty@77'}
-        [pscustomobject]@{name='esx2';ip='172.20.20.7';login='root';password='Azerty@77'}
-        [pscustomobject]@{name='esx3';ip='172.20.20.8';login='root';password='Azerty@77'}
+        [pscustomobject]@{ip='172.20.20.6';user='root';password='Azerty@77'}
+        [pscustomobject]@{ip='172.20.20.7';user='root';password='Azerty@77'}
+        [pscustomobject]@{ip='172.20.20.8';user='root';password='Azerty@77'}
     )
 
-    New-hostesxi -server_hosts $server_hosts -datacenter $datacenter
+    New-hostesxi -server_hosts $server_hosts -cluster $cluster
 
 }
 
