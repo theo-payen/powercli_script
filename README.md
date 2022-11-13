@@ -14,7 +14,3 @@
 Installation de PowerCLI
 
 `Install-Module -Name VMware.PowerCLI`
-
-Ensuite connexion avec notre Vcenter 
-
-`Connect-ViServer @ipVcenter`
