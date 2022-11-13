@@ -3,15 +3,15 @@
 # 2 cree le cluster
 # 3 add host esxi on cluster
 
-function connect {
+function connectvcenter {
     param(
         $vcenter
     )
-    #Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
-    Set-PowerCLIConfiguration -Scope User -InvalidCertificateAction warn
-    connect-VIServer 172.20.20.5
+    Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+    #Set-PowerCLIConfiguration -Scope User -InvalidCertificateAction warn
+    connect-VIServer $vcenter
 }
-function diconect {
+function disconnectvcenter {
     disconnect-viserver -confirm:$false | out-null    
 }
 
@@ -22,6 +22,7 @@ function Set-cluster{
         $datacenter,
         $cluster
     )
+    $location = Get-Folder -NoRecursion
     New-DataCenter -Location $location -Name $datacenter
     New-Cluster -Name $cluster -Location $datacenter
 }
@@ -40,8 +41,7 @@ function New-hostesxi {
 }
 
 function main {
-    Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
-    connect-VIServer 172.20.20.5
+    connectvcenter -vcenter 172.20.20.5
 
     $datacenter = "PV_Datacenter"
     $cluster = "PV_Cluster"
@@ -54,7 +54,7 @@ function main {
     )
 
     New-hostesxi -server_hosts $server_hosts -cluster $cluster
-
+    disconnectvcenter
 }
 
 main
