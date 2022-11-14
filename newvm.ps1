@@ -18,7 +18,7 @@ function select-esx {
             }
         }
     }
-    return $esxiname
+    return Get-VMHost -Name $esxiname
 }
 
 
@@ -26,21 +26,9 @@ function select-esx {
 function main {
     connectvcenter -vcenter 172.20.20.5
     esx = select-esx
-    
-}
-
-
-#objectif 
-#crée une fonction pour déterminé quelle esxi sera choisi 
-
-#Name                 ConnectionState PowerState NumCpu CpuUsageMhz CpuTotalMhz   MemoryUsageGB   MemoryTotalGB Version
-
-
-<#
-$esxi = Get-VMHost -Name MyVMHost1
-New-VM \
+    New-VM \
     -Name MyVM1 \
-    -ResourcePool $esxi \
+    -ResourcePool $esx \
     -Datastore MyDatastore1 \
     -NumCPU 2 \
     -MemoryGB 4 \
@@ -50,4 +38,9 @@ New-VM \
     -CD \
     -DiskStorageFormat Thin \
     -GuestID winNetDatacenterGuest
-#>
+}
+
+
+#objectif 
+#crée une fonction pour déterminé quelle esxi sera choisi 
+
