@@ -8,23 +8,27 @@ function connectvcenter {
 function disconnectvcenter {
     disconnect-viserver -confirm:$false | out-null    
 }
-
-#connectvcenter -vcenter 172.20.20.5
-Get-VMHost
-$Memory = 10000
-$name
-Get-VMHost | ForEach-Object {
-    if ($_.ConnectionState -eq "Connected"){
-        if ($_.MemoryUsageGB -lt $Memory){
-            $Memory = $_.MemoryUsageGB
-            $name = $_.name
+function select-esx {
+    $Memory = 10000
+    Get-VMHost | ForEach-Object {
+        if ($_.ConnectionState -eq "Connected"){
+            if ($_.MemoryUsageGB -lt $Memory){
+                $Memory = $_.MemoryUsageGB
+                $esxiname = $_.name
+            }
         }
-    }else{
-        echo "server stop"
     }
+    return $esxiname
+}
+
+
+
+function main {
+    connectvcenter -vcenter 172.20.20.5
+    esx = select-esx
     
 }
-$name
+
 
 #objectif 
 #crée une fonction pour déterminé quelle esxi sera choisi 
