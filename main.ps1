@@ -1,33 +1,37 @@
-Add-Type -AssemblyName PresentationFramework
-
-[xml]$XML = @"
-        <Window 
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        x:Name="Window" Title="Test Connection Window" Height="150" Width="460" ResizeMode="NoResize">
-
-    <Grid x:Name="LayoutRoot" Background="#FFF">
-        <Button x:Name="Connect" Content="Connect" HorizontalAlignment="Left" Margin="327,10,0,0" VerticalAlignment="Top" Width="100" Height="54" />
-        <Label Name="Label_Email" Content="Your email:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130"/>
-        <TextBox Name="TextBox_Login" HorizontalAlignment="Left" Height="23" Margin="145,10,0,0" TextWrapping="Wrap" Text="youremail@domain.fr" VerticalAlignment="Top" Width="160"/>
-        <Label Name="Label_Password" Content="Your Password" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="130"/>
-        <PasswordBox Name="TextBox_Password" HorizontalAlignment="Left" Margin="145,41,0,0" VerticalAlignment="Top" Width="160" Height="23"/>
+[xml]$XAML_ConnectDialog = @"
+<Window Name="Form_ConnectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Connect" Height="180" Width="350" ResizeMode="NoResize" ShowInTaskbar="False">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="#FFB4B4B4" Offset="1"/>
+                <GradientStop Color="White" Offset="0.603"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <TextBlock TextWrapping="Wrap" Text="Enter the hostname or IP address of the remote host to connect to." Margin="10,0,10,91"/>
+        <Label Content="Connect To:" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="76" Margin="10,47,0,0"/>    
+        <TextBox Name="Txt_ConnectDialog_Input" HorizontalAlignment="Left" Height="23" Margin="91,51,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="208"/>
+        
+        <Label Content="password:" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="76" Margin="12,47,0,0"/>
+        <TextBox Name="Txt_passwordDialog_Input" HorizontalAlignment="Left" Height="23" Margin="110,51,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="208"/>
+        
+        <Button Name="Btn_ConnectDialog_Connect" Content="Connect" Height="20" Margin="194,88,26,20" IsDefault="True"/>
     </Grid>
 </Window>
 "@
 
-$FormXML = (New-Object System.Xml.XmlNodeReader $XML)
-$Window = [Windows.Markup.XamlReader]::Load($FormXML)
-
-$Window.FindName("Connect").add_click({ 
-    $login = $Window.FindName("TextBox_Login").Text
-    $password = $Window.FindName("TextBox_Password").Text
-    $login
-    $password
-    $Window.Close()
-}) 
+$XML_Node_Reader_ConnectDialog = (New-Object System.Xml.XmlNodeReader $XAML_ConnectDialog)
+$ConnectDialog = [Windows.Markup.XamlReader]::Load($XML_Node_Reader_ConnectDialog)
+$Btn_ConnectDialog_Connect = $ConnectDialog.FindName('Btn_ConnectDialog_Connect')
+$Txt_ConnectDialog_Input = $ConnectDialog.FindName('Txt_ConnectDialog_Input')
 
 
-#Connect-VIServer "Server" -User user -Password pass -SaveCredentials
+$Btn_ConnectDialog_Connect.Add_Click({
+    $ConnectDialog.Hide()
+    $script:var = $Txt_ConnectDialog_Input.Text.ToString()
+})
 
-$Window.ShowDialog() | Out-Null
+$ConnectDialog.ShowDialog() | Out-Null
+write-host $var
