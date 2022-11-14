@@ -14,6 +14,7 @@
 Installation de PowerCLI
 
 `Install-Module -Name VMware.PowerCLI`
+`Set-ExecutionPolicy Unrestricted`
 
 ## Script Cluster 
 
