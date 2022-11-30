@@ -5,10 +5,12 @@
 
 function connectvcenter {
     param(
-        $vcenter
+        $vcenter,
+        $login,
+        $password
     )
     Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
-    connect-VIServer $vcenter
+    connect-VIServer $vcenter -User $login -Password $password
 }
 function disconnectvcenter {
     disconnect-viserver -confirm:$false | out-null    
@@ -40,8 +42,11 @@ function New-hostesxi {
 }
 
 function main {
-    connectvcenter -vcenter 172.20.20.5
-
+    $vcenter = Read-Host "address ip du vcenter"
+    $login = Read-Host "login"
+    $password = Read-Host "password"
+    connectvcenter -vcenter $vcenter -login $login -password $password
+    
     $datacenter = "PV_Datacenter"
     $cluster = "PV_Cluster"
     Set-cluster -datacenter $datacenter -cluster $cluster
