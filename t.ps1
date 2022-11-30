@@ -1,16 +1,27 @@
-Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
-connect-VIServer 172.20.20.5 -User administrator@vsphere.local -Password Azerty@77
+function connectvcenter {
+    param(
+        $vcenter,
+        $login,
+        $password
+    )
+    Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+    connect-VIServer $vcenter -User $login -Password $password
+}
 
+function disconnectvcenter {
+    disconnect-viserver -confirm:$false | out-null    
+}
 
+$vcenter = Read-Host "address ip du vcenter"
+$login = Read-Host "login"
+$password = Read-Host "password"
+connectvcenter -vcenter $vcenter -login $login -password $password
 
-#create template
-$myVM = Get-VM -Name "pv_linux01"
-$datastore=Get-Datastore "Storage1"
-New-Template -VM $myVM -Name "MyTemplateLinux01" -Datastore $datastore -Location Pv_Datacenter
+$VM_to_template = Read-Host "entrer le nom de la machine virtuel a templeté"
+$datastore = Read-Host "select your data store"
+$name_template = Read-Host "le nom du template"
 
+$VM_to_template = Get-VM -Name $VM_to_template
+$datastore=Get-Datastore $datastore
 
-#create vm 
-
-$myResourcePool = Get-ResourcePool -Name Resources
-$myTemplate = Get-Template -Name MyTemplateLinux01
-New-VM -Name pv_linux02 -Template $myTemplate -ResourcePool $myResourcePool 
+New-Template -VM $VM_to_template -Name $name_template -Datastore $datastore -Location Pv_Datacenter
