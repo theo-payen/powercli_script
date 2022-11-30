@@ -18,9 +18,6 @@ function template {
         $vcentercluster
     )
     $VM = Get-VM -Name $namevm
-    
-    
-
 }
 
 function main {
