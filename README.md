@@ -7,7 +7,7 @@
 - PAYEN Théo 
 - GEORGE Mukilventhan
 - WAZANE Mohamed
-- HABERMAN Maxime 
+- HABERMANN Maxime 
 
 ## PowerCLI
 
@@ -34,6 +34,8 @@ Notre script permet de :
 - Créer un VM  depuis un template 
 
 ## Script  HA Cluster
+Notre script permet de :
+- Configuration ha dans un cluster
 
 ## Script Snapshot auto
 Notre script permet de :
