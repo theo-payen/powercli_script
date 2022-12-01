@@ -17,8 +17,8 @@ $login = Read-Host "login"
 $password = Read-Host "password"
 connectvcenter -vcenter $vcenter -login $login -password $password
 
-$VM_to_template = Read-Host "entrer le nom de la machine virtuel a templeté"
-$datastore = Read-Host "select your data store"
+$VM_to_template = Read-Host "entrer le nom de la machine virtuel a templaté"
+$datastore = Read-Host "selectionner votre datastore"
 $name_template = Read-Host "le nom du template"
 
 $VM_to_template = Get-VM -Name $VM_to_template

@@ -18,10 +18,27 @@ Installation de PowerCLI
 
 ## Script Cluster 
 
-Notre script permet de créer:
+Notre script permet de :
 -  Créer un cluster 
 -  Créer un centre de donnée
 -  Ajouter un host ESXi dans le cluster 
+
+## Script  Create Template
+Notre script permet de :
+-  Choisir notre machine
+- Stocker dans un datastore le template 
+
+## Script  Create VM from template 
+
+Notre script permet de :
+- Créer un VM  depuis un template 
+
+## Script  HA Cluster
+
+## Script Snapshot auto
+Notre script permet de :
+- Créer un snapshot d'une machine 
+- Supprimer notre snapchot après un temps limité 
 
 ## Source
 
